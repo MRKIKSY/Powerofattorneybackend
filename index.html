@@ -1,3 +1,5 @@
+<!-- 
+ 
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -64,17 +66,16 @@
   </p>
 
   <p>
-  Type the account details of the bank account of the PWAN subsidiary you made payment to:<br>
-  (Don’t worry if you don’t remember the account details, just put the Bank account name that you remember)<br>
-  <input
-    type="text"
-    id="accountDetails"
-    placeholder="Enter bank account name or details"
-    style="width: 100%; padding: 10px; margin: 8px 0; border: 1px solid #ccc; border-radius: 4px;"
-  >
-</p>
-
-
+    Type the account details of the bank account of the PWAN subsidiary you made payment to:<br>
+    (Don’t worry if you don’t remember the account details, just put the Bank account name that you remember
+    or leave <strong> BLANK</strong>)<br>
+    <input
+      type="text"
+      id="accountDetails"
+      placeholder="Enter bank account name or details"
+      style="width: 100%; padding: 10px; margin: 8px 0; border: 1px solid #ccc; border-radius: 4px;"
+    >
+  </p>
 
   <p>
     DO HEREBY appoint <strong>Akinola Samuel Eluyefa Esq</strong>, a legal practitioner duly qualified under the
@@ -98,6 +99,7 @@
     SEND
   </button>
 
+  <!-- Success Modal -->
   <div id="successModal"
     style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); z-index: 1000;">
     <div style="background: white; max-width: 400px; margin: 15% auto; padding: 20px; border-radius: 5px; text-align: center;">
@@ -110,58 +112,73 @@
     </div>
   </div>
 
+  <!-- Error Message -->
   <div id="errorMessage"
     style="display: none; margin-top: 20px; padding: 15px; border: 1px solid #f44336; background-color: #FFBABA; color: #f44336; border-radius: 5px;">
     There was an error submitting your Power of Attorney. Please try again.
   </div>
 
+  <!-- JavaScript Logic -->
   <script>
     const today = new Date().toLocaleDateString();
     document.getElementById("date").innerText = today;
 
-  document.getElementById("submitBtn").onclick = function() {
-  const name = document.getElementById("name").value.trim();
-  const email = document.getElementById("email").value.trim();
-  const amount = document.getElementById("amount").value.trim();
-  const fakePlot = document.getElementById("fakePlot").value.trim();
-  const pwanSubsidiary = document.getElementById("pwanSubsidiary").value.trim();
-  const accountDetails = document.getElementById("accountDetails").value.trim() || "N/A";
+    document.getElementById("submitBtn").onclick = function() {
+      const name = document.getElementById("name").value.trim();
+      const email = document.getElementById("email").value.trim();
+      const amount = document.getElementById("amount").value.trim();
+      const fakePlot = document.getElementById("fakePlot").value.trim();
+      const pwanSubsidiary = document.getElementById("pwanSubsidiary").value.trim();
+      const accountDetails = document.getElementById("accountDetails").value.trim() || "N/A";
 
-  if (!name || !email || !amount || !fakePlot || !pwanSubsidiary) {
-    alert("Please fill in all required fields.");
-    return;
-  }
+      if (!name || !email || !amount || !fakePlot || !pwanSubsidiary) {
+        alert("Please fill in all required fields.");
+        return;
+      }
 
-  const payload = {
-    name: name,
-    email: email,
-    amount: amount,
-    fakePlot: fakePlot,
-    pwanSubsidiary: pwanSubsidiary,
-    accountDetails: accountDetails,
-    date: today
-  };
+      const payload = {
+        name: name,
+        email: email,
+        amount: amount,
+        fakePlot: fakePlot,
+        pwanSubsidiary: pwanSubsidiary,
+        accountDetails: accountDetails,
+        date: today
+      };
 
-  fetch("/submit-poa", {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify(payload)
-  })
-  .then(response => {
-    if (response.ok) {
-      document.getElementById("errorMessage").style.display = "none";
-      document.getElementById("successModal").style.display = "block";
-    } else {
-      document.getElementById("errorMessage").style.display = "block";
-    }
-  })
-  .catch(err => {
-    console.error(err);
-    document.getElementById("errorMessage").style.display = "block";
-  });
-};
+      fetch("/submit-poa", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(payload)
+      })
+      .then(response => {
+        if (response.ok) {
+          document.getElementById("errorMessage").style.display = "none";
+          document.getElementById("successModal").style.display = "block";
+        } else {
+          document.getElementById("errorMessage").style.display = "block";
+        }
+      })
+      .catch(err => {
+        console.error(err);
+        document.getElementById("errorMessage").style.display = "block";
+      });
+    };
 
+    document.getElementById("closeSuccess").onclick = function() {
+      document.getElementById("successModal").style.display = "none";
+
+      // Clear form fields
+      document.getElementById("name").value = "";
+      document.getElementById("email").value = "";
+      document.getElementById("amount").value = "";
+      document.getElementById("fakePlot").value = "";
+      document.getElementById("pwanSubsidiary").value = "";
+      document.getElementById("accountDetails").value = "";
+    };
   </script>
 
 </body>
 </html>
+
+
