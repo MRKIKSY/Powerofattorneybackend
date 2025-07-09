@@ -119,57 +119,48 @@
     const today = new Date().toLocaleDateString();
     document.getElementById("date").innerText = today;
 
-    document.getElementById("submitBtn").onclick = function() {
-      const name = document.getElementById("name").value.trim();
-      const email = document.getElementById("email").value.trim();
-      const amount = document.getElementById("amount").value.trim();
-      const fakePlot = document.getElementById("fakePlot").value.trim();
-      const pwanSubsidiary = document.getElementById("pwanSubsidiary").value.trim();
-      const accountDetails = document.getElementById("accountDetails").value.trim();
+  document.getElementById("submitBtn").onclick = function() {
+  const name = document.getElementById("name").value.trim();
+  const email = document.getElementById("email").value.trim();
+  const amount = document.getElementById("amount").value.trim();
+  const fakePlot = document.getElementById("fakePlot").value.trim();
+  const pwanSubsidiary = document.getElementById("pwanSubsidiary").value.trim();
+  const accountDetails = document.getElementById("accountDetails").value.trim() || "N/A";
 
-      if (!name || !email || !amount || !fakePlot || !pwanSubsidiary || !accountDetails) {
-        alert("Please fill in all required fields.");
-        return;
-      }
+  if (!name || !email || !amount || !fakePlot || !pwanSubsidiary) {
+    alert("Please fill in all required fields.");
+    return;
+  }
 
-      const payload = {
-        name: name,
-        email: email,
-        amount: amount,
-        fakePlot: fakePlot,
-        pwanSubsidiary: pwanSubsidiary,
-        accountDetails: accountDetails,
-        date: today
-      };
+  const payload = {
+    name: name,
+    email: email,
+    amount: amount,
+    fakePlot: fakePlot,
+    pwanSubsidiary: pwanSubsidiary,
+    accountDetails: accountDetails,
+    date: today
+  };
 
-      fetch("/submit-poa", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(payload)
-      })
-      .then(response => {
-        if (response.ok) {
-          document.getElementById("errorMessage").style.display = "none";
-          document.getElementById("successModal").style.display = "block";
-        } else {
-          document.getElementById("errorMessage").style.display = "block";
-        }
-      })
-      .catch(err => {
-        console.error(err);
-        document.getElementById("errorMessage").style.display = "block";
-      });
-    };
+  fetch("/submit-poa", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify(payload)
+  })
+  .then(response => {
+    if (response.ok) {
+      document.getElementById("errorMessage").style.display = "none";
+      document.getElementById("successModal").style.display = "block";
+    } else {
+      document.getElementById("errorMessage").style.display = "block";
+    }
+  })
+  .catch(err => {
+    console.error(err);
+    document.getElementById("errorMessage").style.display = "block";
+  });
+};
 
-    document.getElementById("closeSuccess").onclick = function() {
-      document.getElementById("successModal").style.display = "none";
-      document.getElementById("name").value = "";
-      document.getElementById("email").value = "";
-      document.getElementById("amount").value = "";
-      document.getElementById("fakePlot").value = "";
-      document.getElementById("pwanSubsidiary").value = "";
-      document.getElementById("accountDetails").value = "";
-    };
   </script>
 
 </body>

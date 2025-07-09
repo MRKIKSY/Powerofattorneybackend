@@ -79,9 +79,7 @@
 
 
 # ✅ UPDATE these with your actual email & app password
-YOUR_EMAIL = "kiksymyguy@gmail.com"
-YOUR_PASSWORD = "xnif vxqq aadj rwov"
-TO_EMAIL = "kiksymyguy@gmail.com"
+
 
 from flask import Flask, request, jsonify, send_from_directory
 import smtplib
