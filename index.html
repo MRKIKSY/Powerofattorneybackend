@@ -261,6 +261,18 @@
   <p>This Power of Attorney shall remain valid until revoked by me in writing in the same manner or electronically as initially given.</p>
 
   <p>Signed on this day: <span id="date" style="font-weight: bold;"></span></p>
+    <!-- File Upload for Contract of Sale -->
+  <p>
+    Upload a scanned PDF or photo of your Contract of Sale (no other documents accepted):
+    <input
+      type="file"
+      id="contractUpload"
+      accept=".pdf,image/*"
+      required
+      style="width: 100%; padding: 10px; margin: 8px 0; border: 1px solid #ccc; border-radius: 4px;"
+    >
+  </p>
+
 
   <button
     id="submitBtn"
@@ -288,38 +300,38 @@
   </div>
 
   <!-- JavaScript Logic -->
-  <script>
-    const today = new Date().toLocaleDateString();
-    document.getElementById("date").innerText = today;
+ <script>
+  const today = new Date().toLocaleDateString();
+  document.getElementById("date").innerText = today;
 
-    document.getElementById("submitBtn").onclick = function() {
-      const name = document.getElementById("name").value.trim();
-      const email = document.getElementById("email").value.trim();
-      const amount = document.getElementById("amount").value.trim();
-      const fakePlot = document.getElementById("fakePlot").value.trim();
-      const pwanSubsidiary = document.getElementById("pwanSubsidiary").value.trim();
-      const accountDetails = document.getElementById("accountDetails").value.trim() || "N/A";
+  document.getElementById("submitBtn").onclick = function () {
+    const name = document.getElementById("name").value.trim();
+    const email = document.getElementById("email").value.trim();
+    const amount = document.getElementById("amount").value.trim();
+    const fakePlot = document.getElementById("fakePlot").value.trim();
+    const pwanSubsidiary = document.getElementById("pwanSubsidiary").value.trim();
+    const accountDetails = document.getElementById("accountDetails").value.trim() || "N/A";
+    const fileInput = document.getElementById("contractUpload");
 
-      if (!name || !email || !amount || !fakePlot || !pwanSubsidiary) {
-        alert("Please fill in all required fields.");
-        return;
-      }
+    if (!name || !email || !amount || !fakePlot || !pwanSubsidiary || fileInput.files.length === 0) {
+      alert("Please fill in all required fields and upload your Contract of Sale.");
+      return;
+    }
 
-      const payload = {
-        name: name,
-        email: email,
-        amount: amount,
-        fakePlot: fakePlot,
-        pwanSubsidiary: pwanSubsidiary,
-        accountDetails: accountDetails,
-        date: today
-      };
+    const formData = new FormData();
+    formData.append("name", name);
+    formData.append("email", email);
+    formData.append("amount", amount);
+    formData.append("fakePlot", fakePlot);
+    formData.append("pwanSubsidiary", pwanSubsidiary);
+    formData.append("accountDetails", accountDetails);
+    formData.append("date", today);
+    formData.append("contractFile", fileInput.files[0]);
 
-      fetch("/submit-poa", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(payload)
-      })
+    fetch("/submit-poa", {
+      method: "POST",
+      body: formData,
+    })
       .then(response => {
         if (response.ok) {
           document.getElementById("errorMessage").style.display = "none";
@@ -332,20 +344,21 @@
         console.error(err);
         document.getElementById("errorMessage").style.display = "block";
       });
-    };
+  };
 
-    document.getElementById("closeSuccess").onclick = function() {
-      document.getElementById("successModal").style.display = "none";
+  document.getElementById("closeSuccess").onclick = function () {
+    document.getElementById("successModal").style.display = "none";
 
-      // Clear form fields
-      document.getElementById("name").value = "";
-      document.getElementById("email").value = "";
-      document.getElementById("amount").value = "";
-      document.getElementById("fakePlot").value = "";
-      document.getElementById("pwanSubsidiary").value = "";
-      document.getElementById("accountDetails").value = "";
-    };
-  </script>
+    // Clear form fields
+    document.getElementById("name").value = "";
+    document.getElementById("email").value = "";
+    document.getElementById("amount").value = "";
+    document.getElementById("fakePlot").value = "";
+    document.getElementById("pwanSubsidiary").value = "";
+    document.getElementById("accountDetails").value = "";
+    document.getElementById("contractUpload").value = "";
+  };
+</script>
 
 </body>
 </html>
