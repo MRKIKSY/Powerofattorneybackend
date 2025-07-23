@@ -97,6 +97,7 @@
     <input
       type="file"
       id="contractUpload"
+      name="contractFiles" 
       accept=".pdf,image/*"
       multiple
       required
@@ -176,7 +177,7 @@
       formData.append("date", today);
 
       for (let file of fileInput.files) {
-        formData.append("contractFiles", file);
+        formData.append("contractFiles", file, file.name);
       }
 
       const xhr = new XMLHttpRequest();
