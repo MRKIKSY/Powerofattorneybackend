@@ -1,5 +1,3 @@
-
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -92,103 +90,138 @@
   <p>This Power of Attorney shall remain valid until revoked by me in writing in the same manner or electronically as initially given.</p>
 
   <p>Signed on this day: <span id="date" style="font-weight: bold;"></span></p>
-    <!-- File Upload for Contract of Sale -->
-  <!-- Inside <body> after your inputs -->
-<p>
-  Upload scanned PDF or photo(s) of your Contract of Sale (Max total size 25MB):
-  <input
-    type="file"
-    id="contractUpload"
-    accept=".pdf,image/*"
-    multiple
-    required
-    style="width: 100%; padding: 10px; margin: 8px 0; border: 1px solid #ccc; border-radius: 4px;"
-  >
-  <small style="color: red;">Maximum total size allowed: 25MB</small>
-</p>
 
-<!-- Upload Progress Bar -->
-<div style="margin-top: 10px;">
-  <progress id="uploadProgress" value="0" max="100" style="width: 100%; display: none;"></progress>
-</div>
+  <!-- File Upload for Contract of Sale -->
+  <p>
+    Upload scanned PDF or photo(s) of your Contract of Sale (Max total size 25MB):
+    <input
+      type="file"
+      id="contractUpload"
+      accept=".pdf,image/*"
+      multiple
+      required
+      style="width: 100%; padding: 10px; margin: 8px 0; border: 1px solid #ccc; border-radius: 4px;"
+    >
+    <small style="color: red;">Maximum total size allowed: 25MB</small>
+  </p>
 
-<!-- Update your <script> section -->
-<script>
-  const today = new Date().toLocaleDateString();
-  document.getElementById("date").innerText = today;
+  <!-- Upload Progress Bar -->
+  <div style="margin-top: 10px;">
+    <progress id="uploadProgress" value="0" max="100" style="width: 100%; display: none;"></progress>
+  </div>
 
-  document.getElementById("submitBtn").onclick = function () {
-    const name = document.getElementById("name").value.trim();
-    const email = document.getElementById("email").value.trim();
-    const amount = document.getElementById("amount").value.trim();
-    const fakePlot = document.getElementById("fakePlot").value.trim();
-    const pwanSubsidiary = document.getElementById("pwanSubsidiary").value.trim();
-    const accountDetails = document.getElementById("accountDetails").value.trim() || "N/A";
-    const fileInput = document.getElementById("contractUpload");
-    const progressBar = document.getElementById("uploadProgress");
+  <!-- Submit Button -->
+  <button
+    id="submitBtn"
+    style="background-color: #003366; color: #fff; border: none; padding: 12px 30px; border-radius: 4px; cursor: pointer; font-size: 16px; margin-top: 15px;">
+    SEND
+  </button>
 
-    if (!name || !email || !amount || !fakePlot || !pwanSubsidiary || fileInput.files.length === 0) {
-      alert("Please fill in all required fields and upload your Contract of Sale.");
-      return;
-    }
+  <!-- Success Modal -->
+  <div id="successModal"
+    style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); z-index: 1000;">
+    <div style="background: white; max-width: 400px; margin: 15% auto; padding: 20px; border-radius: 5px; text-align: center;">
+      <h3 style="color: #4CAF50;">Success</h3>
+      <p>Your Power of Attorney to Akinola Samuel Eluyefa has been sent successfully!</p>
+      <button id="closeSuccess"
+        style="background-color: #003366; color: #fff; border: none; padding: 10px 20px; border-radius: 4px; cursor: pointer;">
+        OK
+      </button>
+    </div>
+  </div>
 
-    let totalSize = 0;
-    for (let file of fileInput.files) {
-      totalSize += file.size;
-    }
+  <!-- Error Message -->
+  <div id="errorMessage"
+    style="display: none; margin-top: 20px; padding: 15px; border: 1px solid #f44336; background-color: #FFBABA; color: #f44336; border-radius: 5px;">
+    There was an error submitting your Power of Attorney. Please try again.
+  </div>
 
-    if (totalSize > 25 * 1024 * 1024) {
-      alert("Total upload size exceeds 25MB limit.");
-      return;
-    }
+  <!-- JavaScript Logic -->
+  <script>
+    const today = new Date().toLocaleDateString();
+    document.getElementById("date").innerText = today;
 
-    const formData = new FormData();
-    formData.append("name", name);
-    formData.append("email", email);
-    formData.append("amount", amount);
-    formData.append("fakePlot", fakePlot);
-    formData.append("pwanSubsidiary", pwanSubsidiary);
-    formData.append("accountDetails", accountDetails);
-    formData.append("date", today);
+    document.getElementById("submitBtn").onclick = function () {
+      const name = document.getElementById("name").value.trim();
+      const email = document.getElementById("email").value.trim();
+      const amount = document.getElementById("amount").value.trim();
+      const fakePlot = document.getElementById("fakePlot").value.trim();
+      const pwanSubsidiary = document.getElementById("pwanSubsidiary").value.trim();
+      const accountDetails = document.getElementById("accountDetails").value.trim() || "N/A";
+      const fileInput = document.getElementById("contractUpload");
+      const progressBar = document.getElementById("uploadProgress");
 
-    for (let file of fileInput.files) {
-      formData.append("contractFiles", file);
-    }
-
-    const xhr = new XMLHttpRequest();
-    xhr.open("POST", "/submit-poa", true);
-
-    progressBar.style.display = "block";
-
-    xhr.upload.onprogress = function (e) {
-      if (e.lengthComputable) {
-        let percent = Math.round((e.loaded / e.total) * 100);
-        progressBar.value = percent;
+      if (!name || !email || !amount || !fakePlot || !pwanSubsidiary || fileInput.files.length === 0) {
+        alert("Please fill in all required fields and upload your Contract of Sale.");
+        return;
       }
-    };
 
-    xhr.onload = function () {
-      progressBar.style.display = "none";
-      if (xhr.status === 200) {
-        document.getElementById("successModal").style.display = "block";
-        document.getElementById("errorMessage").style.display = "none";
-      } else {
+      let totalSize = 0;
+      for (let file of fileInput.files) {
+        totalSize += file.size;
+      }
+
+      if (totalSize > 25 * 1024 * 1024) {
+        alert("Total upload size exceeds 25MB limit.");
+        return;
+      }
+
+      const formData = new FormData();
+      formData.append("name", name);
+      formData.append("email", email);
+      formData.append("amount", amount);
+      formData.append("fakePlot", fakePlot);
+      formData.append("pwanSubsidiary", pwanSubsidiary);
+      formData.append("accountDetails", accountDetails);
+      formData.append("date", today);
+
+      for (let file of fileInput.files) {
+        formData.append("contractFiles", file);
+      }
+
+      const xhr = new XMLHttpRequest();
+      xhr.open("POST", "/submit-poa", true);
+
+      progressBar.style.display = "block";
+
+      xhr.upload.onprogress = function (e) {
+        if (e.lengthComputable) {
+          let percent = Math.round((e.loaded / e.total) * 100);
+          progressBar.value = percent;
+        }
+      };
+
+      xhr.onload = function () {
+        progressBar.style.display = "none";
+        if (xhr.status === 200) {
+          document.getElementById("successModal").style.display = "block";
+          document.getElementById("errorMessage").style.display = "none";
+        } else {
+          document.getElementById("errorMessage").style.display = "block";
+        }
+      };
+
+      xhr.onerror = function () {
+        progressBar.style.display = "none";
         document.getElementById("errorMessage").style.display = "block";
-      }
+      };
+
+      xhr.send(formData);
     };
 
-    xhr.onerror = function () {
-      progressBar.style.display = "none";
-      document.getElementById("errorMessage").style.display = "block";
+    document.getElementById("closeSuccess").onclick = function () {
+      document.getElementById("successModal").style.display = "none";
+
+      // Clear form
+      document.getElementById("name").value = "";
+      document.getElementById("email").value = "";
+      document.getElementById("amount").value = "";
+      document.getElementById("fakePlot").value = "";
+      document.getElementById("pwanSubsidiary").value = "";
+      document.getElementById("accountDetails").value = "";
+      document.getElementById("contractUpload").value = "";
     };
-
-    xhr.send(formData);
-  };
-</script>
-
-
-
+  </script>
 
 </body>
 </html>
-
