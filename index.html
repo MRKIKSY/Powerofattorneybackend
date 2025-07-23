@@ -1,172 +1,3 @@
-<!-- <!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8" />
-  <title>PWAN Group Petition - Power of Attorney</title>
-</head>
-<body style="font-family: Arial, sans-serif; margin: 2rem; max-width: 800px; line-height: 1.6;">
-
-  <h2 style="text-align: center; color: #003366;">POWER OF ATTORNEY - AUTHORISE ELUYEFA CHAMBERS</h2>
-
-  <p>
-    I,
-    <input
-      type="text"
-      id="name"
-      placeholder="TYPE YOUR NAME IN CAPS"
-      required
-      style="width: 100%; padding: 10px; margin: 8px 0; border: 1px solid #ccc; border-radius: 4px;"
-    >
-  </p>
-
-  <p>
-    With the following email address:
-    <input
-      type="email"
-      id="email"
-      placeholder="Enter a valid email address"
-      required
-      style="width: 100%; padding: 10px; margin: 8px 0; border: 1px solid #ccc; border-radius: 4px;"
-    >
-  </p>
-
-  <p>
-    My total claim amount in Naira:
-    <input
-      type="number"
-      id="amount"
-      placeholder="No commas, figures only"
-      required
-      style="width: 100%; padding: 10px; margin: 8px 0; border: 1px solid #ccc; border-radius: 4px;"
-    >
-  </p>
-
-  <p>
-    Name of non-existent plot or estate that was sold to you:
-    <input
-      type="text"
-      id="fakePlot"
-      placeholder="Enter fake plot or estate name"
-      required
-      style="width: 100%; padding: 10px; margin: 8px 0; border: 1px solid #ccc; border-radius: 4px;"
-    >
-  </p>
-
-  <p>
-    Name of the PWAN subsidiary that sold the fake plot or estate to you:
-    <input
-      type="text"
-      id="pwanSubsidiary"
-      placeholder="Enter PWAN subsidiary name"
-      required
-      style="width: 100%; padding: 10px; margin: 8px 0; border: 1px solid #ccc; border-radius: 4px;"
-    >
-  </p>
-
-  <p>
-  Type the account details of the bank account of the PWAN subsidiary you made payment to:<br>
-  (Don’t worry if you don’t remember the account details, just put the Bank account name that you remember
-  or leave <strong> BLANK</strong>)<br>
-  <input
-    type="text"
-    id="accountDetails"
-    placeholder="Enter bank account name or details"
-    style="width: 100%; padding: 10px; margin: 8px 0; border: 1px solid #ccc; border-radius: 4px;"
-  >
-</p>
-
-
-
-  <p>
-    DO HEREBY appoint <strong>Akinola Samuel Eluyefa Esq</strong>, a legal practitioner duly qualified under the
-    <em>Legal Practitioners Act, Cap L11, Laws of the Federation of Nigeria 2004</em> and the
-    <em>Powers of Attorney Law, Cap P6, Laws of Lagos State 2015</em>, as my true and lawful Attorney:
-  </p>
-
-  <ol style="margin-left: 1rem;">
-    <li>To draft, adopt, sign, attest and submit on my behalf any criminal complaints, petitions, affidavits or statements to any law enforcement agency, including but not limited to the EFCC and Nigeria Police, in respect of my complaint(s) and claim(s) against the Chairman and Directors of PWAN Group of Companies.</li>
-    <li>To represent me in writing, in person, or electronically in all official communication with regards to the PWAN Criminal Matter and subsequent proceedings until final determination under Nigerian law.</li>
-    <li>To take any other lawful steps to protect my interests regarding this matter.</li>
-  </ol>
-
-  <p>This Power of Attorney shall remain valid until revoked by me in writing in the same manner or electronically as initially given.</p>
-
-  <p>Signed on this day: <span id="date" style="font-weight: bold;"></span></p>
-
-  <button
-    id="submitBtn"
-    style="background-color: #003366; color: #fff; border: none; padding: 12px 30px; border-radius: 4px; cursor: pointer; font-size: 16px;">
-    SEND
-  </button>
-
-  <div id="successModal"
-    style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); z-index: 1000;">
-    <div style="background: white; max-width: 400px; margin: 15% auto; padding: 20px; border-radius: 5px; text-align: center;">
-      <h3 style="color: #4CAF50;">Success</h3>
-      <p>Your Power of Attorney to Akinola Samuel Eluyefa has been sent successfully!</p>
-      <button id="closeSuccess"
-        style="background-color: #003366; color: #fff; border: none; padding: 10px 20px; border-radius: 4px; cursor: pointer;">
-        OK
-      </button>
-    </div>
-  </div>
-
-  <div id="errorMessage"
-    style="display: none; margin-top: 20px; padding: 15px; border: 1px solid #f44336; background-color: #FFBABA; color: #f44336; border-radius: 5px;">
-    There was an error submitting your Power of Attorney. Please try again.
-  </div>
-
-  <script>
-    const today = new Date().toLocaleDateString();
-    document.getElementById("date").innerText = today;
-
-  document.getElementById("submitBtn").onclick = function() {
-  const name = document.getElementById("name").value.trim();
-  const email = document.getElementById("email").value.trim();
-  const amount = document.getElementById("amount").value.trim();
-  const fakePlot = document.getElementById("fakePlot").value.trim();
-  const pwanSubsidiary = document.getElementById("pwanSubsidiary").value.trim();
-  const accountDetails = document.getElementById("accountDetails").value.trim() || "N/A";
-
-  if (!name || !email || !amount || !fakePlot || !pwanSubsidiary) {
-    alert("Please fill in all required fields.");
-    return;
-  }
-
-  const payload = {
-    name: name,
-    email: email,
-    amount: amount,
-    fakePlot: fakePlot,
-    pwanSubsidiary: pwanSubsidiary,
-    accountDetails: accountDetails,
-    date: today
-  };
-
-  fetch("/submit-poa", {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify(payload)
-  })
-  .then(response => {
-    if (response.ok) {
-      document.getElementById("errorMessage").style.display = "none";
-      document.getElementById("successModal").style.display = "block";
-    } else {
-      document.getElementById("errorMessage").style.display = "block";
-    }
-  })
-  .catch(err => {
-    console.error(err);
-    document.getElementById("errorMessage").style.display = "block";
-  });
-};
-
-  </script>
-
-</body>
-</html> -->
-
 
 
 <!DOCTYPE html>
@@ -262,45 +93,27 @@
 
   <p>Signed on this day: <span id="date" style="font-weight: bold;"></span></p>
     <!-- File Upload for Contract of Sale -->
-  <p>
-    Upload a scanned PDF or photo of your Contract of Sale (no other documents accepted):
-    <input
-      type="file"
-      id="contractUpload"
-      accept=".pdf,image/*"
-      required
-      style="width: 100%; padding: 10px; margin: 8px 0; border: 1px solid #ccc; border-radius: 4px;"
-    >
-  </p>
+  <!-- Inside <body> after your inputs -->
+<p>
+  Upload scanned PDF or photo(s) of your Contract of Sale (Max total size 25MB):
+  <input
+    type="file"
+    id="contractUpload"
+    accept=".pdf,image/*"
+    multiple
+    required
+    style="width: 100%; padding: 10px; margin: 8px 0; border: 1px solid #ccc; border-radius: 4px;"
+  >
+  <small style="color: red;">Maximum total size allowed: 25MB</small>
+</p>
 
+<!-- Upload Progress Bar -->
+<div style="margin-top: 10px;">
+  <progress id="uploadProgress" value="0" max="100" style="width: 100%; display: none;"></progress>
+</div>
 
-  <button
-    id="submitBtn"
-    style="background-color: #003366; color: #fff; border: none; padding: 12px 30px; border-radius: 4px; cursor: pointer; font-size: 16px;">
-    SEND
-  </button>
-
-  <!-- Success Modal -->
-  <div id="successModal"
-    style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); z-index: 1000;">
-    <div style="background: white; max-width: 400px; margin: 15% auto; padding: 20px; border-radius: 5px; text-align: center;">
-      <h3 style="color: #4CAF50;">Success</h3>
-      <p>Your Power of Attorney to Akinola Samuel Eluyefa has been sent successfully!</p>
-      <button id="closeSuccess"
-        style="background-color: #003366; color: #fff; border: none; padding: 10px 20px; border-radius: 4px; cursor: pointer;">
-        OK
-      </button>
-    </div>
-  </div>
-
-  <!-- Error Message -->
-  <div id="errorMessage"
-    style="display: none; margin-top: 20px; padding: 15px; border: 1px solid #f44336; background-color: #FFBABA; color: #f44336; border-radius: 5px;">
-    There was an error submitting your Power of Attorney. Please try again.
-  </div>
-
-  <!-- JavaScript Logic -->
- <script>
+<!-- Update your <script> section -->
+<script>
   const today = new Date().toLocaleDateString();
   document.getElementById("date").innerText = today;
 
@@ -312,9 +125,20 @@
     const pwanSubsidiary = document.getElementById("pwanSubsidiary").value.trim();
     const accountDetails = document.getElementById("accountDetails").value.trim() || "N/A";
     const fileInput = document.getElementById("contractUpload");
+    const progressBar = document.getElementById("uploadProgress");
 
     if (!name || !email || !amount || !fakePlot || !pwanSubsidiary || fileInput.files.length === 0) {
       alert("Please fill in all required fields and upload your Contract of Sale.");
+      return;
+    }
+
+    let totalSize = 0;
+    for (let file of fileInput.files) {
+      totalSize += file.size;
+    }
+
+    if (totalSize > 25 * 1024 * 1024) {
+      alert("Total upload size exceeds 25MB limit.");
       return;
     }
 
@@ -326,39 +150,44 @@
     formData.append("pwanSubsidiary", pwanSubsidiary);
     formData.append("accountDetails", accountDetails);
     formData.append("date", today);
-    formData.append("contractFile", fileInput.files[0]);
 
-    fetch("/submit-poa", {
-      method: "POST",
-      body: formData,
-    })
-      .then(response => {
-        if (response.ok) {
-          document.getElementById("errorMessage").style.display = "none";
-          document.getElementById("successModal").style.display = "block";
-        } else {
-          document.getElementById("errorMessage").style.display = "block";
-        }
-      })
-      .catch(err => {
-        console.error(err);
+    for (let file of fileInput.files) {
+      formData.append("contractFiles", file);
+    }
+
+    const xhr = new XMLHttpRequest();
+    xhr.open("POST", "/submit-poa", true);
+
+    progressBar.style.display = "block";
+
+    xhr.upload.onprogress = function (e) {
+      if (e.lengthComputable) {
+        let percent = Math.round((e.loaded / e.total) * 100);
+        progressBar.value = percent;
+      }
+    };
+
+    xhr.onload = function () {
+      progressBar.style.display = "none";
+      if (xhr.status === 200) {
+        document.getElementById("successModal").style.display = "block";
+        document.getElementById("errorMessage").style.display = "none";
+      } else {
         document.getElementById("errorMessage").style.display = "block";
-      });
-  };
+      }
+    };
 
-  document.getElementById("closeSuccess").onclick = function () {
-    document.getElementById("successModal").style.display = "none";
+    xhr.onerror = function () {
+      progressBar.style.display = "none";
+      document.getElementById("errorMessage").style.display = "block";
+    };
 
-    // Clear form fields
-    document.getElementById("name").value = "";
-    document.getElementById("email").value = "";
-    document.getElementById("amount").value = "";
-    document.getElementById("fakePlot").value = "";
-    document.getElementById("pwanSubsidiary").value = "";
-    document.getElementById("accountDetails").value = "";
-    document.getElementById("contractUpload").value = "";
+    xhr.send(formData);
   };
 </script>
+
+
+
 
 </body>
 </html>
