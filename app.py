@@ -27,7 +27,7 @@ def submit_poa():
     contract_files = request.files.getlist('contractFiles')
 
     if not all([name, email, amount, fake_plot, pwan_subsidiary]):
-        return jsonify({"error": "All fields except account details and file are required."}), 400
+        return jsonify({"error": "All fields except account details and files are required."}), 400
 
     # Compose email content
     poa_content = f"""
@@ -53,7 +53,8 @@ SIGNED AND EXECUTED ELECTRONICALLY ON THIS {date}.
 
     # Attach all uploaded contract files
     for file in contract_files:
-        if file:
+        if file and file.filename:
+            file.stream.seek(0)  # Reset pointer before reading
             msg.add_attachment(
                 file.read(),
                 maintype='application',
