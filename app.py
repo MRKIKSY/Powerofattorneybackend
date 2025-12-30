@@ -5,9 +5,7 @@ from email.message import EmailMessage
 
 app = Flask(__name__, static_folder='.', static_url_path='')
 
-YOUR_EMAIL = "kiksymyguy@gmail.com"
-YOUR_PASSWORD = "xnif vxqq aadj rwov"
-TO_EMAIL = "kiksymyguy@gmail.com"
+
 
 @app.route('/')
 def serve_index():
