@@ -5,71 +5,79 @@ from email.message import EmailMessage
 
 app = Flask(__name__, static_folder='.', static_url_path='')
 
+# USE ENV VARIABLES (Render / Production Safe)
+YOUR_EMAIL = os.environ.get("YOUR_EMAIL")
+YOUR_PASSWORD = os.environ.get("YOUR_PASSWORD")
+TO_EMAIL = os.environ.get("TO_EMAIL")
 
 
 @app.route('/')
 def serve_index():
     return send_from_directory('.', 'index.html')
 
+
 @app.route('/submit-poa', methods=['POST'])
 def submit_poa():
-    name = request.form.get('name')
+    full_name = request.form.get('fullName')
     email = request.form.get('email')
-    amount = request.form.get('amount')
-    fake_plot = request.form.get('fakePlot')
-    pwan_subsidiary = request.form.get('pwanSubsidiary')
+    payment_date = request.form.get('paymentDate')
     account_details = request.form.get('accountDetails')
-    date = request.form.get('date')
 
-    # Get all uploaded files
-    contract_files = request.files.getlist('contractFiles')
+    documents = request.files.getlist('documents')
 
-    if not all([name, email, amount, fake_plot, pwan_subsidiary]):
-        return jsonify({"error": "All fields except account details and files are required."}), 400
+    if not all([full_name, email, payment_date, account_details]):
+        return jsonify({"error": "All fields are required."}), 400
 
-    # Compose email content
+    if not documents or len(documents) == 0:
+        return jsonify({"error": "At least one document must be uploaded."}), 400
+
     poa_content = f"""
-POWER OF ATTORNEY
+POWER OF ATTORNEY – SUPPORTING INFORMATION
 
-Name: {name}
-Email: {email}
-Claim Amount (₦): {amount}
+FULL NAME:
+{full_name}
 
-Non-existent Plot/Estate: {fake_plot}
-PWAN Subsidiary: {pwan_subsidiary}
-PWAN Subsidiary Bank Account Details: {account_details}
+EMAIL ADDRESS:
+{email}
 
-SIGNED AND EXECUTED ELECTRONICALLY ON THIS {date}.
+DATE PAYMENT WAS MADE INTO PWAN ACCOUNT:
+{payment_date}
+
+NAME AND ACCOUNT DETAILS PAID INTO (BUY 2 SELL):
+{account_details}
+
+This submission was made electronically
+for the purpose of filing and adopting a criminal petition
+before the EFCC and other relevant authorities.
 """
 
-    # Create email message
     msg = EmailMessage()
-    msg['Subject'] = f"New Power of Attorney - {name}"
+    msg['Subject'] = f"PWAN BUY2SELL PETITION – {full_name}"
     msg['From'] = YOUR_EMAIL
     msg['To'] = TO_EMAIL
     msg.set_content(poa_content)
 
-    # Attach all uploaded contract files
-    for file in contract_files:
-        if file and file.filename:
-            file.stream.seek(0)  # Reset pointer before reading
+    for doc in documents:
+        if doc and doc.filename:
             msg.add_attachment(
-                file.read(),
+                doc.read(),
                 maintype='application',
                 subtype='octet-stream',
-                filename=file.filename
+                filename=doc.filename
             )
 
     try:
         with smtplib.SMTP_SSL('smtp.gmail.com', 465) as server:
             server.login(YOUR_EMAIL, YOUR_PASSWORD)
             server.send_message(msg)
-        return jsonify({"message": "POA and contract(s) uploaded successfully"}), 200
+
+        return jsonify({"message": "Submission successful"}), 200
+
     except Exception as e:
-        print("Error:", e)
-        return jsonify({"error": str(e)}), 500
+        print("Email error:", e)
+        return jsonify({"error": "Submission failed"}), 500
+
 
 if __name__ == "__main__":
     port = int(os.environ.get("PORT", 5000))
     app.run(debug=True, host='0.0.0.0', port=port)
-    
