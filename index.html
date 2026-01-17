@@ -13,26 +13,22 @@ PWAN BUY2SELL – DOCUMENT SUBMISSION
 
 <p>
 <strong>Full Name</strong>
-<input type="text" id="fullName" required
-style="width:100%; padding:10px;">
+<input type="text" id="fullName" required style="width:100%; padding:10px;">
 </p>
 
 <p>
 <strong>Email Address</strong>
-<input type="email" id="email" required
-style="width:100%; padding:10px;">
+<input type="email" id="email" required style="width:100%; padding:10px;">
 </p>
 
 <p>
 <strong>Date Payment Was Made Into PWAN Account</strong>
-<input type="date" id="paymentDate" required
-style="width:100%; padding:10px;">
+<input type="date" id="paymentDate" required style="width:100%; padding:10px;">
 </p>
 
 <p>
 <strong>Name and Account Details the Buy2Sell Investment Was Paid Into</strong>
-<textarea id="accountDetails" required
-style="width:100%; padding:10px; height:80px;"></textarea>
+<textarea id="accountDetails" required style="width:100%; padding:10px; height:90px;"></textarea>
 </p>
 
 <p>
@@ -46,7 +42,7 @@ style="background:#003366;color:white;padding:12px 25px;border:none;cursor:point
 SUBMIT
 </button>
 
-<div id="message" style="margin-top:15px;"></div>
+<div id="message" style="margin-top:15px;font-weight:bold;"></div>
 
 <script>
 document.getElementById("submitBtn").onclick = function () {
@@ -59,6 +55,13 @@ document.getElementById("submitBtn").onclick = function () {
 
   if (!fullName || !email || !paymentDate || !accountDetails || files.length === 0) {
     alert("Please complete all fields and upload at least one document.");
+    return;
+  }
+
+  let totalSize = 0;
+  for (let file of files) totalSize += file.size;
+  if (totalSize > 25 * 1024 * 1024) {
+    alert("Total upload size exceeds 25MB.");
     return;
   }
 
@@ -77,9 +80,15 @@ document.getElementById("submitBtn").onclick = function () {
     body: formData
   })
   .then(res => res.json())
-  .then(() => {
-    document.getElementById("message").innerHTML =
-      "<span style='color:green;'>Submission successful.</span>";
+  .then(data => {
+    if (data.error) {
+      document.getElementById("message").innerHTML =
+        "<span style='color:red;'>" + data.error + "</span>";
+    } else {
+      document.getElementById("message").innerHTML =
+        "<span style='color:green;'>Submission successful.</span>";
+      document.getElementById("submitBtn").disabled = true;
+    }
   })
   .catch(() => {
     document.getElementById("message").innerHTML =
@@ -90,3 +99,4 @@ document.getElementById("submitBtn").onclick = function () {
 
 </body>
 </html>
+
