@@ -50,9 +50,11 @@ SUBMIT
 </button>
 
 <div id="message" style="margin-top:15px;font-weight:bold;"></div>
-
 <script>
 document.getElementById("submitBtn").onclick = function () {
+
+  const btn = document.getElementById("submitBtn");
+  const messageBox = document.getElementById("message");
 
   const fullName = document.getElementById("fullName").value.trim();
   const email = document.getElementById("email").value.trim();
@@ -65,10 +67,21 @@ document.getElementById("submitBtn").onclick = function () {
     return;
   }
 
+  // Prevent double submission
+  btn.disabled = true;
+  btn.innerText = "SENDING...";
+  btn.style.background = "#999";
+  btn.style.cursor = "not-allowed";
+  messageBox.innerHTML = "<span style='color:#003366;'>Uploading documents, please wait...</span>";
+
   let totalSize = 0;
   for (let file of files) totalSize += file.size;
   if (totalSize > 25 * 1024 * 1024) {
     alert("Total upload size exceeds 25MB.");
+    btn.disabled = false;
+    btn.innerText = "SUBMIT";
+    btn.style.background = "#003366";
+    btn.style.cursor = "pointer";
     return;
   }
 
@@ -89,20 +102,33 @@ document.getElementById("submitBtn").onclick = function () {
   .then(res => res.json())
   .then(data => {
     if (data.error) {
-      document.getElementById("message").innerHTML =
+      messageBox.innerHTML =
         "<span style='color:red;'>" + data.error + "</span>";
+
+      // Re-enable button on error
+      btn.disabled = false;
+      btn.innerText = "SUBMIT";
+      btn.style.background = "#003366";
+      btn.style.cursor = "pointer";
     } else {
-      document.getElementById("message").innerHTML =
-        "<span style='color:green;'>Submission successful.</span>";
-      document.getElementById("submitBtn").disabled = true;
+      messageBox.innerHTML =
+        "<span style='color:green;'>Submission successful. Your documents have been received.</span>";
+      btn.innerText = "SENT ✓";
     }
   })
   .catch(() => {
-    document.getElementById("message").innerHTML =
-      "<span style='color:red;'>Submission failed.</span>";
+    messageBox.innerHTML =
+      "<span style='color:red;'>Submission failed. Please try again.</span>";
+
+    btn.disabled = false;
+    btn.innerText = "SUBMIT";
+    btn.style.background = "#003366";
+    btn.style.cursor = "pointer";
   });
 };
 </script>
+
+  
 
 </body>
 </html>
